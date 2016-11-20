@@ -1,0 +1,152 @@
+; general maths
+! 6
+: 3
+; 2
+* "9
+\ _*
+& @&
+/ _/
+# _?
+% .0
+? 8
+| _|
+" ,7
+[ .<
+] .>
+\{ _<
+\} _>
+( "<
+) ">
++ "6
+- "-
+< @<
+= "7
+> @>
+\wedge "8
+\times "8
+\sum .s
+\rightarrow 33o
+\to 33o
+\longrightarrow 333o
+\leftarrow {33
+\leftarrow  {33 
+\leftrightarrow {33o
+\right 
+\left 
+
+\ldots '''
+\le _@<
+\leq _@<
+\geq _@>
+\ge _@>
+\equiv ~9
+\dots '''
+\circ _*
+\cdots '''
+\cdot _*
+\pm _6
+\mp _-
+\neq "7@:
+\ne "7@:
+\log  log 
+
+; general latex
+=======
+\div `/
+
+\propto  ;2 
+
+; general latex
+>>>>>>> .r202
+\, 
+\:  
+\;  
+\!  
+\quad   
+\qquad   
+\qquad   
+
+; set theory 
+\therefore  ,*
+\supseteq _.1:
+\supset _.1
+\subset ~<
+\subseteq _"k
+\setminus _*
+\forall `&
+\emptyset `j
+\cup .6
+\cap .8
+\in ~e
+\infty #=
+\perp #-
+; trig and hyperbolic functions
+\tanh  tanh
+\tan  tan
+\sinh  sinh
+\sin  sin
+\sec  sec
+\cot  cot 
+\cosh  cosh
+\cosec  cosec
+\cos  cos
+
+; calculus 
+\int ;;!
+\nabla .$
+\partial $
+
+; capital greek letters
+\Alpha ,.a
+\Beta ,.b
+\Gamma ,.g
+\Delta ,.d
+\Epsilon ,.e
+\Zeta ,.z
+\Eta ,.h
+\Theta ,.?
+\Iota ,.i
+\Kappa ,.k
+\Lambda ,.l
+\Mu ,.m
+\Nu ,.n
+\Xi ,.x
+\Omicron ,.o
+\Pi ,.p
+\Rho ,.r
+\Sigma ,.s
+\Tau ,.t
+\Upsilon ,.u
+\Phi ,.f
+\Psi ,.y
+\Chi ,.c
+\Omega ,.w
+
+; small greek
+\alpha .a
+\beta .b
+\gamma .g
+\delta .d
+\epsilon .e
+\zeta .z
+\eta .h
+\theta .?
+\iota .i
+\kappa .k
+\lambda .l
+\mu .m
+\nu .n
+\xi .x
+\omicron .o
+\pi .p
+\rho .r
+\sigma .s
+\tau .t
+\upsilon .u
+\phi .f
+\psi .y
+\chi .c
+\omega .w
+
+; Probability 
+\Pr ,pr

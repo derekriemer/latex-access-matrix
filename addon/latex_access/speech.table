@@ -1,0 +1,160 @@
+; Basic arithmetic functions
++ plus
+- minus
+< less than
+= equals
+> greater than
+\times times
+\div divided by
+\pm plus or minus
+\leq  less than or equal to
+\le less than or equal to
+\geq  greater than or equal to
+\ge  greater than or equal to
+\equiv equiv
+\approx approximately equal to
+\sim asymptotic to 
+\neq not equals
+\ne not equals
+\ll less than less than
+\gg greater than greater than
+\pm plus or minus
+\mp minus or plus
+\leftrightarrow  if and only if
+\Rightarrow  goes to
+\rightarrow  goes to
+\to goes to
+\Leftrightarrow  if and only if
+\longrightarrow  goes to
+\longleftrightarrow  if and only if
+\wedge  and
+\vee or
+\lnot not
+\not not
+\neg not
+\propto  proportional to
+\min min
+\max max
+\lfloor left floor
+\rfloor right floor
+
+; trigonometric and hyperbolic functions
+\tanh  thann
+\tan tan
+\arctan arc tan
+\sinh  shine
+\sin  sine
+\arcsin arc sine
+\cosh  cosh
+\cos  coz
+\arccos arc coz
+
+; capital greek letters
+\Alpha  cap alpha
+\Beta  cap beta
+\Gamma  cap gamma
+\Delta  cap delta
+\Epsilon  cap epsilon
+\Zeta  cap zeta
+\Eta  cap eta
+\Theta  cap theta
+\Iota  cap iota
+\Kappa  cap kappa
+\Lambda   cap lambda
+\Mu  cap mu
+\Nu  cap nu
+\Xi  cap xi
+\Omicron  cap omicron
+\Pi  cap pi
+\Rho  cap rho
+\Sigma  cap sigma
+\Tau  cap tau
+\Upsilon  cap upsilon
+\Phi  cap phi
+\Psi  cap psi
+\Chi  cap chi
+\Omega  cap omega
+
+; small greek letters
+\alpha  alpha
+\beta  beta
+\gamma  gamma
+\delta  delta
+\epsilon  epsilon
+\zeta  zeta
+\eta   eta
+\theta  theta
+\iota  iota
+\kappa  kappa
+\lambda  lambda
+\mu  mu
+\nu  nu
+\xi  xi
+\omicron  omicron
+\pi  pi
+\varpi var pi
+\rho  rho
+\sigma  sigma
+\tau  tau
+\upsilon  upsilon
+\phi  phi
+\psi  psi
+\chi  chi
+\omega  omega
+
+\varphi var phi
+\vartheta var theta
+\varepsilon var epsilon
+
+
+; set theory
+\setminus set minus
+\cap  intersection
+\triangleleft  normal subgroup
+\therefore  therefore
+\supseteq  superset or equal to
+\supset  superset
+\subseteq  subset or equal to
+\subset  subset
+\in  in
+\notin not in
+\ni not in
+\forall  for all
+\exists there exists
+\emptyset  empty set
+\cup  union
+\lim  limit
+\{ open brace
+\} close brace
+; standard LaTeX commands for better reading
+\cdot  dot
+\cdots  dot dot dot
+\right 
+\quad 
+\qquad 
+\left 
+\ldots  dot dot dot
+\dots  dot dot dot
+\;  
+\,  
+\!  
+\:  
+\textbackslash \
+\textdegree degrees
+
+; calculus
+\partial  partial
+\nabla  nabla
+\oint contour integral 
+
+; special characters
+\infty  infinity
+\perp perpendicular
+; Probability and permutations
+
+\Pr probability of
+\choose choose
+\Choose choose
+
+
+

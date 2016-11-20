@@ -1,0 +1,183 @@
+﻿; alapvető aritmetikai műveletek
++ plusz
+- minusz
+< kisebb
+= egyenlő
+> nagyobb
+* szorozva
+\times kereszt
+\div per
+\over per
+/ per
+\pm pluszminusz
+\leq  kisebb egyenlő
+\leqq kisebb egyenlő
+\le kisebb egyenlő
+\geq  nagyobb egyenlő
+\ge  nagyobb egyenlő
+\geqq nagyobb egyenlő
+\equiv ekvivalens
+\neq nem egyenlő
+\ne nem egyenlő
+\ll kisebb kisebb
+\gg nagyobb nagyobb
+\pm pluszminusz
+\mp minuszplusz
+\leftrightarrow  akkor és csak akkor ha
+\Rightarrow  jobbranyíl
+\rightarrow  jobbranyíl
+\to jobbranyíl
+\Leftrightarrow  akkor és csak akkor ha
+\longrightarrow  jobbranyíl
+\longleftrightarrow  akkor és csak akkor ha
+\Longleftrightarrow  akkor és csak akkor ha
+\wedge  és
+\vee vagy
+\lnot nem
+\not nem
+\neg nem
+\propto  proportional to
+\min min
+\max max
+
+; Trigonometrikus és hiperbolikus függvények
+\tanh  tangens hiperbolikusz
+\tan tangens
+\arctan arkusz tangens
+\sinh  szinusz hiperbolikusz
+\sin  szinusz
+\arcsin arkusz szinusz
+\cosh  koszinusz hiperbolikusz
+\cos  koszinusz
+\arccos arkusz koszinusz
+
+; Nagy görög betűk
+\Alpha  nagy alfa
+\Beta  nagy béta
+\Gamma  nagy gamma
+\Delta  nagy delta
+\Epsilon  nagy epszilon
+
+\Zeta  nagy zeta
+\Eta  nagy éta
+\Theta  nagy teta
+\Iota  nagy iota
+\Kappa  nagy kappa
+\Lambda   nagy lambda
+\Mu  nagy mű
+\Nu  nagy nű
+\Xi  nagy xí
+\Omicron  nagy omikron
+\Pi  nagy pí
+\Rho  nagy ró
+\Sigma  nagy szigma
+\Tau  nagy tau
+\Upsilon  nagy upszilon
+\Phi  nagy fí
+\Psi  nagy pszí
+\Chi  nagy khí
+\Omega  nagy omega
+
+; kis görög betűk
+\alpha  alfa
+\beta  béta
+\gamma  gamma
+\delta  delta
+\epsilon  epszilon
+\zeta  zeta
+\eta   éta
+\theta  teta
+\iota  iota
+\kappa  kappa
+\lambda  lambda
+\mu  mű
+\nu  nű
+\xi  xí
+\omicron  omikron
+\pi  pí
+\rho  ró
+\sigma  szigma
+\tau  tau
+\upsilon  upszilon
+\phi  fí
+\psi  pszí
+\chi  khí
+\omega  omega
+
+\varpi pí
+\varphi fí
+\vartheta teta
+\varepsilon epszilon
+
+; set theory
+\setminus különbség
+\triangleleft  normál alcsoport
+\therefore  ezért
+\supseteq  szuperhalmaz vagy egyenlő
+\supset  szuperhalmaz
+\subseteq  részhalmaza vagy egyenlő
+\subset  részhalmaza
+\rmint interior
+\subs része
+\setminus különbség
+\in  eleme
+\notin nem eleme
+\ni nem eleme
+\forall  minden
+\exists létezik
+\emptyset  üres halmaz
+\lim  limesz
+\{ kezdőkapcsos
+\} végkapcsos
+
+; Standard latex parancsok gördülékenyebb olvasáshoz:
+\cdot  szorozva
+\cdots  pont pont pont
+\vdots pont pont pont
+\right
+\quad
+\qquad
+\left
+\ldots  pont pont pont
+\dots  pont pont pont
+\;
+\,
+\!
+\rm 
+\textbackslash \
+\dsp 
+\Dsp 
+\mathop 
+\limits 
+\textdegree fok
+
+; calculus
+\partial  parciális
+\nabla  nabla
+
+
+Speciális karakterek
+\infty  végtelen
+\perp merőleges
+
+Valószínűség és permutáció
+\Pr valószínűség
+! faktoriális
+\choose alatt
+\Choose alatt
+
+
+Egyéb jelölések
+' vessző
+\Vert norma
+\vert norma
+| függőleges
+\haf f kalap
+\clF fourier transzformált
+\lceil felfelé kerekít
+\rceil kerekítés zár
+\exp e ad
+\ovz z konjugált
+
+;list item operators:
+\item item
