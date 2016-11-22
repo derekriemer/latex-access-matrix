@@ -33,6 +33,7 @@ class EditableLatex(NVDAObjects.behaviors.EditableText):
 	_firstMatrix=None#points at an NVDAObject
 	_curMatrix=None#points at the NVDAObject representing the currently selected matrix
 	_lastMatrix=None#points at an NVDAObject
+	_currentFocus=None
 
 	def _get_firstMatrix(self):
 		return EditableLatex._firstMatrix
@@ -51,6 +52,11 @@ class EditableLatex(NVDAObjects.behaviors.EditableText):
 
 	def _set_curMatrix(self, value):
 		EditableLatex._curMatrix = value
+
+	def _get_currentFocus(self):
+		"""Gets the current focus. This is intended to help the parent focus the proper thing after the matrix browser closes.
+		"""
+		return EditableLatex._currentFocus
 
 	def _caretScriptPostMovedHelper(self, speakUnit, gesture, info = None):
 		"""
@@ -72,7 +78,7 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 			brailledLine = GetLine ()
 			if not spokenLine and not brailledLine:# Is it a blank line?
 				spokenLine = _("blank")
-				brailledLine = _("")
+				brailledLine = ""
 			else:
 				spokenLine = EditableLatex.latex_access.speech (spokenLine)
 				brailledLine = EditableLatex.latex_access.nemeth (brailledLine)
@@ -105,7 +111,7 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 				brailledLine = GetLine ()
 				if not spokenLine and not brailledLine:# Is it a blank line?
 					spokenLine = _("blank")
-					brailledLine = _("")
+					brailledLine = ""
 				else:
 					spokenLine = EditableLatex.latex_access.speech (spokenLine)
 					brailledLine = EditableLatex.latex_access.nemeth (brailledLine)
@@ -123,7 +129,6 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		@param gesture: the gesture to be passed through to nvda (in this case, a keypress).
 		@type gesture: l{inputCore.InputGesture}
 		"""
-
 		dollars = EditableLatex.latex_access.toggle_dollars_nemeth ()
 		if dollars == True:
 			ui.message (_("nemeth dollars off"))
@@ -137,7 +142,6 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		@param gesture: the gesture to be passed through to nvda (in this case, a keypress).
 		@type gesture: l{inputCore.InputGesture}
 		"""
-
 		dollars = EditableLatex.latex_access.toggle_dollars_speech ()
 		if dollars == True:
 			ui.message (_("speech dollars off"))
@@ -184,6 +188,8 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 			return
 		tones.beep(400, 100)
 		ui.message("Matrix browser active.")
+		EditableLatex._currentFocus = self
+		print self.currentFocus
 		self.curMatrix.setFocus()
 
 	# For the input gestures:

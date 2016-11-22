@@ -61,8 +61,12 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 	def isOnlyMatrix(self):
 		return not (self.next or  self.previous)
 
-	def reportFocus(self):
-		self.speakMatrix()
+	def reportFocus(self, verbose=False):
+		if verbose:
+			self.speakMatrix()
+		else:
+			msg = "Matrix {} at  {} {}".format(self.matrixNumber, self.row, self.column)
+			ui.message(msg)
 
 	def script_nextRow(self, gesture):
 		""" Increases the row count by 1 if possible, speaking the new row, or speaks that the edge was reached. """
@@ -100,7 +104,7 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 		if self.isOnlyMatrix():
 			#last matrix in browser. Clean up.
 			self.parent.curMatrix = self.parent.firstMatrix = self.parent.lastMatrix = None
-			eventHandler.executeEvent("gainFocus", self.parent)
+			eventHandler.executeEvent("gainFocus", self.parent.currentFocus)
 			return
 		elif self.next is None:
 			self.previous.next = None
@@ -140,6 +144,12 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 	script_previousMatrix.__doc__ = "Goes to the previous matrix in the browser if possible."
 
 	def script_reportFocus(self, gesture):
+		self.reportFocus(verbose=True)
+
+	def script_exit(self, gesture):
+		eventHandler.executeEvent("gainFocus", self.parent.currentFocus)
+
+	def script_reportLocation(self, gesture):
 		self.reportFocus()
 
 	__gestures = {
@@ -151,4 +161,5 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 		"kb:shift+tab" : "previousMatrix",
 		"kb:delete" : "deleteMatrix",
 		"kb:nvda+tab" : "reportFocus",
+		"kb:nvda+delete" : "reportLocation",
 	}

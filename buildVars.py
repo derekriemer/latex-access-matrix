@@ -37,7 +37,7 @@ import os.path
 pythonSources = ["addon/globalPlugins/latex_access_nvda/*.py", "addon/latex_access/*"]
 
 # Files that contain strings for translation. Usually your python sources
-i18nSources = pythonSources + ["buildVars.py"]
+i18nSources = pythonSources[:-1] + ["buildVars.py"]
 
 # Files that will be ignored when building the nvda-addon file
 # Paths are relative to the addon directory, not to the root directory of your addon sources.
