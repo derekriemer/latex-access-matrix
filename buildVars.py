@@ -34,7 +34,7 @@ import os.path
 
 # Define the python files that are the sources of your add-on.
 # You can use glob expressions here, they will be expanded.
-pythonSources = ["addon\**"]
+pythonSources = ["addon/globalPlugins/latex_access_nvda/*.py", "addon/latex_access/*"]
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources = pythonSources + ["buildVars.py"]
