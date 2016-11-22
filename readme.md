@@ -16,6 +16,7 @@ As a college student who took  calculus and linear algebra, and with an interest
 * Tab or Shift+tab: Move to the next or previous matrix loaded into the browser.
 * Delete: Deletes the current matrix.
 * NVDA+Tab: Report the currently focused matrix.
+* nvda+delete read the location in the matrix.
 
 ## 2: matrix Browser: An overview.
 
@@ -64,12 +65,12 @@ $\begin{Bmatrix}
 Now that you understand when this feature is useful, I'll give a more conventional description of how to use it.
 You load selected matrix text into the browser with nvda+alt+m, which reports the matrix.
 repeat that as many times as useful.
-When you need to recall the matrix, press nvda+alt+b, and the matrix browser comes up.
+When you need to recall the matrix, press nvda+alt+b, and the matrix browser comes up. It announces your current position in the current matrix.
 Read the current matrix by arrowing around it, I.E. press right arrow to go to column 2. 
 Pressing tab or shift+tab moves you to the previous or next matrix. Each matrix is numbered from 1 to n, and matrices renumber themselves when one is deleted.
 Press delete to delete any arbitrary matrix. The next matrix is focused. Additionally, the matrices are renumbered to reflect the deletion.
 Press escape to leave the browser.
-If you need the matrix read again, simply press nvda+tab, which is NVDA's command to read the current focus.
+If you need the whole matrix read again, simply press nvda+tab, which is NVDA's command to read the current focus.
 To read the location in the matrix, press nvda+delete (The report location command). 
 
 ## 3: La tex reporting

@@ -65,8 +65,11 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 		if verbose:
 			self.speakMatrix()
 		else:
-			msg = "Matrix {} at  {} {}".format(self.matrixNumber, self.row, self.column)
+			msg = "Matrix {} at  {} {} value {}".format(
+									self.matrixNumber, self.row, self.column,
+									self.matrix.get_cell(self.row, self.column))
 			ui.message(msg)
+			
 
 	def script_nextRow(self, gesture):
 		""" Increases the row count by 1 if possible, speaking the new row, or speaks that the edge was reached. """
