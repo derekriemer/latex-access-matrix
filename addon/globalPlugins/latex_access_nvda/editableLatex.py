@@ -166,14 +166,14 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		"""
 		if self.curMatrix is None: #First matrix to exist.
 			cur = matrixBrowser.MatrixBrowserNVDAObject(latex = getSelectedText(), chooseBestAPI=False)
-			EditableLatex.firstMatrix = EditableLatex.lastMatrix = EditableLatex.curMatrix = cur 
-			print EditableLatex.firstMatrix
+			self.firstMatrix = self.lastMatrix = self.curMatrix = cur
+			print self.firstMatrix
 		else:
-			EditableLatex.lastMatrix = EditableLatex.lastMatrix.create(getSelectedText())
+			self.lastMatrix = self.lastMatrix.create(getSelectedText())
 	script_inputMatrix.__doc__ = _ ("Initialises a matrix.  First highlight it and then run this script to have it as an object.")
 	
 	def script_matrixBrowser(self,gesture):
-		if EditableLatex.firstMatrix == None:
+		if self.firstMatrix == None:
 			tones.beep(800, 300)
 			time.sleep(.350)
 			tones.beep(600, 400)

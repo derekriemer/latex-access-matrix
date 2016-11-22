@@ -61,9 +61,8 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 	def isOnlyMatrix(self):
 		return not (self.next or  self.previous)
 
-	def event_gainFocus(self):
+	def reportFocus(self):
 		self.speakMatrix()
-
 
 	def script_nextRow(self, gesture):
 		""" Increases the row count by 1 if possible, speaking the new row, or speaks that the edge was reached. """
@@ -102,7 +101,6 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 			#last matrix in browser. Clean up.
 			self.parent.curMatrix = self.parent.firstMatrix = self.parent.lastMatrix = None
 			eventHandler.executeEvent("gainFocus", self.parent)
-			del self
 			return
 		elif self.next is None:
 			self.previous.next = None
@@ -129,7 +127,6 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 		if self.isOnlyMatrix():
 			ui.message("There is only one matrix currently loaded.")
 			return
-		ui.message("Switching to next matrix")
 		self.parent.curMatrix = (self.next if self.next else self.parent.firstMatrix)
 		eventHandler.executeEvent("gainFocus", self.parent.curMatrix)
 	script_nextMatrix.__doc__ = "Goes to the next matrix in the browser if possible."
@@ -138,10 +135,12 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 		if self.isOnlyMatrix():
 			ui.message("There is only one matrix currently loaded.")
 			return
-		ui.message("Switching to previous matrix")
 		self.parent.curMatrix = (self.previous if self.previous else self.parent.lastMatrix)
 		eventHandler.executeEvent("gainFocus", self.parent.curMatrix)
 	script_previousMatrix.__doc__ = "Goes to the previous matrix in the browser if possible."
+
+	def script_reportFocus(self, gesture):
+		self.reportFocus()
 
 	__gestures = {
 		"kb:upArrow" : "previousRow",
@@ -151,4 +150,5 @@ class MatrixBrowserNVDAObject(MathInteractionNVDAObject):
 		"kb:tab" : "nextMatrix",
 		"kb:shift+tab" : "previousMatrix",
 		"kb:delete" : "deleteMatrix",
+		"kb:nvda+tab" : "reportFocus",
 	}
