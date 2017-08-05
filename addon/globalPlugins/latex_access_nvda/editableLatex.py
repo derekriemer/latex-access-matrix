@@ -321,7 +321,8 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 	def getBrailleRegions(self, review=False):
 		"""Return modified braille regions for la tex.
 		"""
-		if self.processMaths:
+		#Until I get braille working better, it's disabled.
+		if False and self.processMaths:
 			region2 = LatexBrailleRegion(self)
 		else:
 			# Late import to avoid circular import.
