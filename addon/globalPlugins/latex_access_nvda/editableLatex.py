@@ -1,6 +1,7 @@
 import time
 import os
 import sys
+import re
 from globalFunctions import *
 import NVDAObjects
 import config
@@ -18,6 +19,12 @@ import latex_access, latex_access.speech, latex_access.nemeth
 sys.path.remove(sys.path[-1])
 
 TEXT_SEPARATOR = " "
+
+MATH_MATCHER = re.compile(
+	r"<(/?(?:sup|sub))>|"
+		r"[^<]+"
+)
+
 
 class LatexBrailleRegion(TextInfoRegion):
 	"""Braille and routing support for regions when latex-access is on."""
@@ -204,7 +211,46 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 			else:
 				spokenLine = EditableLatex.speech.translate (spokenLine)
 				brailledLine = EditableLatex.nemeth.translate(brailledLine)
-			speech.speakMessage (spokenLine)
+				out = []
+				sups = 0 #How many superscripts we are in.
+				subs = 0 #How many subscripts we are in.
+				for expr in MATH_MATCHER.finditer(spokenLine):
+					if expr.group(1) == "sup":
+						sups+=1
+						#If there are any subscripts, do not pitch it, as we pitched the subscript.
+						#If there are any superscripts nessted, don't pitch it, because voice control isn't good enough for this in NVDA.
+						if sups > 1 or subs >= 1:
+							out.append("soop")
+						else:
+							out.append(speech.PitchCommand(1.5))
+							out.append(speech.BreakCommand(200))
+					elif expr.group(1) == "/sup":
+						sups -= 1
+						if sups > 0 or subs >= 1:
+							#we know we are in a subscript or superscript. We can't pitch either way.
+							out.append("End soop")
+						else:
+							out.append(speech.PitchCommand(1))
+							out.append(speech.BreakCommand(200))
+					elif expr.group(1) == "sub":
+						subs += 1
+						if subs > 1 or sups >= 1:
+							out.append("sub")
+						else:
+							out.append(speech.PitchCommand(.5))
+							out.append(speech.BreakCommand(200))
+					elif expr.group(1) == "/sub":
+						subs -= 1
+						if subs > 0 or sups >= 1:
+							#we know we are in a subscript or superscript. We can't pitch either way.
+							out.append("End sub")
+						else:
+							out.append(speech.PitchCommand(1))
+							out.append(speech.BreakCommand(200))
+					else:
+						#all other math. Send er.
+						out.append(expr.group(0))
+				speech.speak(out)
 			#braille.handler.message (brailledLine)
 		else:
 			if speakUnit:
@@ -308,7 +354,7 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 			time.sleep(.550)
 			ui.message("No matrices exist, save one first.")
 			return
-		tones.beep(400, 100)
+		tones.beep(400, 200)
 		ui.message("Matrix browser active.")
 		EditableLatex._currentFocus = self
 		#We will set the parent of all the matrices to this object's, because otherwise, NVDA reads the title of that window damn it.
