@@ -7,13 +7,134 @@ import config
 import api
 import matrixBrowser
 import braille, speech, ui
+from braille import NVDAObjectHasUsefulText, ReviewTextInfoRegion, CursorManagerRegion, TextInfoRegion
+import louis
 import controlTypes
 import textInfos
 import scriptHandler
 import tones
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-import latex_access, latex_access.latex_access_com
+import latex_access, latex_access.speech, latex_access.nemeth
 sys.path.remove(sys.path[-1])
+
+TEXT_SEPARATOR = " "
+
+class LatexBrailleRegion(TextInfoRegion):
+	"""Braille and routing support for regions when latex-access is on."""
+	def __init__(self, obj):
+		super(LatexBrailleRegion, self).__init__(obj)
+		self.realRawText=""
+		self.realRawToBraillePos = []
+		
+
+	def update(self):
+		#Unfortunately, we cannot use the base implementation, because we need to do custom stuff.
+		#Therefore, this has a lot copied verbatim 
+		formatConfig = config.conf["documentFormatting"]
+		unit = self._getReadingUnit()
+		self.rawText = ""
+		self.rawTextTypeforms = []
+		self.cursorPos = None
+		# The output includes text representing fields which isn't part of the real content in the control.
+		# Therefore, maintain a map of positions in the output to positions in the content.
+		self._rawToContentPos = []
+		self._currentContentPos = 0
+		self.selectionStart = self.selectionEnd = None
+		self._isFormatFieldAtStart = True
+		self._skipFieldsNotAtStartOfNode = False
+		self._endsWithField = False
+
+		# Selection has priority over cursor.
+		# HACK: Some TextInfos only support UNIT_LINE properly if they are based on POSITION_CARET,
+		# and copying the TextInfo breaks this ability.
+		# So use the original TextInfo for line and a copy for cursor/selection.
+		self._readingInfo = readingInfo = self._getSelection()
+		sel = readingInfo.copy()
+		if not sel.isCollapsed:
+			# There is a selection.
+			if self.obj.isTextSelectionAnchoredAtStart:
+				# The end of the range is exclusive, so make it inclusive first.
+				readingInfo.move(textInfos.UNIT_CHARACTER, -1, "end")
+			# Collapse the selection to the unanchored end.
+			readingInfo.collapse(end=self.obj.isTextSelectionAnchoredAtStart)
+			# Get the reading unit at the selection.
+			readingInfo.expand(unit)
+			# Restrict the selection to the reading unit.
+			if sel.compareEndPoints(readingInfo, "startToStart") < 0:
+				sel.setEndPoint(readingInfo, "startToStart")
+			if sel.compareEndPoints(readingInfo, "endToEnd") > 0:
+				sel.setEndPoint(readingInfo, "endToEnd")
+		else:
+			# There is a cursor.
+			# Get the reading unit at the cursor.
+			readingInfo.expand(unit)
+
+		# Not all text APIs support offsets, so we can't always get the offset of the selection relative to the start of the reading unit.
+		# Therefore, grab the reading unit in three parts.
+		# First, the chunk from the start of the reading unit to the start of the selection.
+		chunk = readingInfo.copy()
+		chunk.collapse()
+		chunk.setEndPoint(sel, "endToStart")
+		self._addTextWithFields(chunk, formatConfig)
+		# If the user is entering braille, place any untranslated braille before the selection.
+		# Import late to avoid circular import.
+		import brailleInput
+		text = brailleInput.handler.untranslatedBraille
+		if text:
+			rawInputIndStart = len(self.rawText)
+			# _addFieldText adds text to self.rawText and updates other state accordingly.
+			self._addFieldText(INPUT_START_IND + text + INPUT_END_IND, None, separate=False)
+			rawInputIndEnd = len(self.rawText)
+		else:
+			rawInputIndStart = None
+		# Now, the selection itself.
+		self._addTextWithFields(sel, formatConfig, isSelection=True)
+		# Finally, get the chunk from the end of the selection to the end of the reading unit.
+		chunk.setEndPoint(readingInfo, "endToEnd")
+		chunk.setEndPoint(sel, "startToEnd")
+		self._addTextWithFields(chunk, formatConfig)
+
+		# Strip line ending characters.
+		self.rawText = self.rawText.rstrip("\r\n\0\v\f")
+		rawTextLen = len(self.rawText)
+		if rawTextLen < len(self._rawToContentPos):
+			# The stripped text is shorter than the original.
+			self._currentContentPos = self._rawToContentPos[rawTextLen]
+			del self.rawTextTypeforms[rawTextLen:]
+			# Trimming _rawToContentPos doesn't matter,
+			# because we'll only ever ask for indexes valid in rawText.
+			#del self._rawToContentPos[rawTextLen:]
+		if rawTextLen == 0 or not self._endsWithField:
+			# There is no text left after stripping line ending characters,
+			# or the last item added can be navigated with a cursor.
+			# Add a space in case the cursor is at the end of the reading unit.
+			self.rawText += TEXT_SEPARATOR
+			rawTextLen += 1
+			self.rawTextTypeforms.append(louis.plain_text)
+			self._rawToContentPos.append(self._currentContentPos)
+		if self.cursorPos is not None and self.cursorPos >= rawTextLen:
+			self.cursorPos = rawTextLen - 1
+		# The selection end doesn't have to be checked, Region.update() makes sure brailleSelectionEnd is valid.
+		# If this is not the start of the object, hide all previous regions.
+		start = readingInfo.obj.makeTextInfo(textInfos.POSITION_FIRST)
+		self.hidePreviousRegions = (start.compareEndPoints(readingInfo, "startToStart") < 0)
+		# Don't touch focusToHardLeft if it is already true
+		# For example, it can be set to True in getFocusContextRegions when this region represents the first new focus ancestor
+		# Alternatively, BrailleHandler._doNewObject can set this to True when this region represents the focus object and the focus ancestry didn't change
+		if not self.focusToHardLeft:
+			# If this is a multiline control, position it at the absolute left of the display when focused.
+			self.focusToHardLeft = self._isMultiline()
+		#Get braille for the latex.
+		#Unfortunately, latex-access returns ascii braille, not dots. Fake this now.
+		if self.obj.processMaths:
+			print "yack"
+			self.realRawText = self.rawText
+			self.realRawToBraillePos = self.rawToBraillePos
+			self.rawText = self.obj.nemeth.translate(self.rawText)
+			self.rawToBraillePos = self.obj.nemeth.trans2src
+		braille.Region.update(self)
+
+	
 
 class EditableLatex(NVDAObjects.behaviors.EditableText):
 	"""
@@ -29,7 +150,8 @@ class EditableLatex(NVDAObjects.behaviors.EditableText):
 	"""
 
 	processMaths = False
-	latex_access = latex_access.latex_access_com.latex_access_com()
+	speech = latex_access.speech.speech()
+	nemeth = latex_access.nemeth.nemeth()
 	_firstMatrix=None#points at an NVDAObject
 	_curMatrix=None#points at the NVDAObject representing the currently selected matrix
 	_lastMatrix=None#points at an NVDAObject
@@ -80,10 +202,10 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 				spokenLine = _("blank")
 				brailledLine = ""
 			else:
-				spokenLine = EditableLatex.latex_access.speech (spokenLine)
-				brailledLine = EditableLatex.latex_access.nemeth (brailledLine)
+				spokenLine = EditableLatex.speech.translate (spokenLine)
+				brailledLine = EditableLatex.nemeth.translate(brailledLine)
 			speech.speakMessage (spokenLine)
-			braille.handler.message (brailledLine)
+			#braille.handler.message (brailledLine)
 		else:
 			if speakUnit:
 				info.expand(speakUnit)
@@ -114,9 +236,9 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 					brailledLine = ""
 				else:
 					spokenLine = EditableLatex.latex_access.speech (spokenLine)
-					brailledLine = EditableLatex.latex_access.nemeth (brailledLine)
+					#brailledLine = EditableLatex.latex_access.nemeth (brailledLine)
 				speech.speakMessage (spokenLine)
-				braille.handler.message (brailledLine)
+				#braille.handler.message (brailledLine)
 			else:
 				speech.speakTextInfo(info,unit=textInfos.UNIT_LINE,reason=speech.REASON_CARET)
 		else:
@@ -189,8 +311,31 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		tones.beep(400, 100)
 		ui.message("Matrix browser active.")
 		EditableLatex._currentFocus = self
-		print self.currentFocus
+		#We will set the parent of all the matrices to this object's, because otherwise, NVDA reads the title of that window damn it.
+		matrix = self.firstMatrix
+		while matrix:
+			matrix.parent  = self
+			matrix = matrix.next
 		self.curMatrix.setFocus()
+
+	def getBrailleRegions(self, review=False):
+		"""Return modified braille regions for la tex.
+		"""
+		if self.processMaths:
+			region2 = LatexBrailleRegion(self)
+		else:
+			# Late import to avoid circular import.
+			from treeInterceptorHandler import TreeInterceptor, DocumentTreeInterceptor
+			from cursorManager import CursorManager
+			from NVDAObjects import NVDAObject
+			if isinstance(self, CursorManager):
+				region2 = (ReviewTextInfoRegion if review else CursorManagerRegion)(self)
+			elif isinstance(self, DocumentTreeInterceptor) or (isinstance(self,NVDAObject) and NVDAObjectHasUsefulText(self)):
+				region2 = (ReviewTextInfoRegion if review else TextInfoRegion)(self)
+			else:
+				region2 = None
+		region =braille.NVDAObjectRegion(self)
+		return (region, region2)
 
 	# For the input gestures:
 	__gestures = {
