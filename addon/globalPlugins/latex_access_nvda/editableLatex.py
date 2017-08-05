@@ -163,6 +163,8 @@ class EditableLatex(NVDAObjects.behaviors.EditableText):
 	_curMatrix=None#points at the NVDAObject representing the currently selected matrix
 	_lastMatrix=None#points at an NVDAObject
 	_currentFocus=None
+	
+	
 
 	def _get_firstMatrix(self):
 		return EditableLatex._firstMatrix
@@ -204,54 +206,11 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 			api.setReviewPosition (info)
 		if speakUnit == textInfos.UNIT_LINE and EditableLatex.processMaths:
 			spokenLine = GetLine ()
-			brailledLine = GetLine ()
-			if not spokenLine and not brailledLine:# Is it a blank line?
+			#We don't need to get braille. It's handled by the region.
+			if not spokenLine:# Is it a blank line?
 				spokenLine = _("blank")
-				brailledLine = ""
 			else:
-				spokenLine = EditableLatex.speech.translate (spokenLine)
-				brailledLine = EditableLatex.nemeth.translate(brailledLine)
-				out = []
-				sups = 0 #How many superscripts we are in.
-				subs = 0 #How many subscripts we are in.
-				for expr in MATH_MATCHER.finditer(spokenLine):
-					if expr.group(1) == "sup":
-						sups+=1
-						#If there are any subscripts, do not pitch it, as we pitched the subscript.
-						#If there are any superscripts nessted, don't pitch it, because voice control isn't good enough for this in NVDA.
-						if sups > 1 or subs >= 1:
-							out.append("soop")
-						else:
-							out.append(speech.PitchCommand(1.5))
-							out.append(speech.BreakCommand(200))
-					elif expr.group(1) == "/sup":
-						sups -= 1
-						if sups > 0 or subs >= 1:
-							#we know we are in a subscript or superscript. We can't pitch either way.
-							out.append("End soop")
-						else:
-							out.append(speech.PitchCommand(1))
-							out.append(speech.BreakCommand(200))
-					elif expr.group(1) == "sub":
-						subs += 1
-						if subs > 1 or sups >= 1:
-							out.append("sub")
-						else:
-							out.append(speech.PitchCommand(.5))
-							out.append(speech.BreakCommand(200))
-					elif expr.group(1) == "/sub":
-						subs -= 1
-						if subs > 0 or sups >= 1:
-							#we know we are in a subscript or superscript. We can't pitch either way.
-							out.append("End sub")
-						else:
-							out.append(speech.PitchCommand(1))
-							out.append(speech.BreakCommand(200))
-					else:
-						#all other math. Send er.
-						out.append(expr.group(0))
-				speech.speak(out)
-			#braille.handler.message (brailledLine)
+				self.speakMathLine(spokenLine)
 		else:
 			if speakUnit:
 				info.expand(speakUnit)
@@ -263,8 +222,8 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		@param gesture: the gesture to be passed through to NVDA (in this case, a keypress).
 		@type gesture: l{inputCore.InputGesture}.
 		"""
-
-		obj=api.getFocusObject()
+		#obj is an alias for self. to ease maintenence in Inherited code.
+		obj = self
 		treeInterceptor=obj.treeInterceptor
 		if hasattr(treeInterceptor,'TextInfo') and not treeInterceptor.passThrough:
 			obj=treeInterceptor
@@ -276,15 +235,10 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		if scriptHandler.getLastScriptRepeatCount()==0:
 			if EditableLatex.processMaths:
 				spokenLine = GetLine ()
-				brailledLine = GetLine ()
-				if not spokenLine and not brailledLine:# Is it a blank line?
+				if not spokenLine:# Is it a blank line?
 					spokenLine = _("blank")
-					brailledLine = ""
 				else:
-					spokenLine = EditableLatex.latex_access.speech (spokenLine)
-					#brailledLine = EditableLatex.latex_access.nemeth (brailledLine)
-				speech.speakMessage (spokenLine)
-				#braille.handler.message (brailledLine)
+					self.speakMathLine(spokenLine)
 			else:
 				speech.speakTextInfo(info,unit=textInfos.UNIT_LINE,reason=speech.REASON_CARET)
 		else:
@@ -297,7 +251,7 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		@param gesture: the gesture to be passed through to nvda (in this case, a keypress).
 		@type gesture: l{inputCore.InputGesture}
 		"""
-		dollars = EditableLatex.latex_access.toggle_dollars_nemeth ()
+		dollars = self.nemeth.remove_dollars=not self.nemeth.remove_dollars
 		if dollars == True:
 			ui.message (_("nemeth dollars off"))
 		else:
@@ -310,7 +264,7 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		@param gesture: the gesture to be passed through to nvda (in this case, a keypress).
 		@type gesture: l{inputCore.InputGesture}
 		"""
-		dollars = EditableLatex.latex_access.toggle_dollars_speech ()
+		dollars = self.speech.remove_dollars=not self.speech.remove_dollars
 		if dollars == True:
 			ui.message (_("speech dollars off"))
 		else:
@@ -363,6 +317,45 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 			matrix.parent  = self
 			matrix = matrix.next
 		self.curMatrix.setFocus()
+
+	def speakMathLine(self, spokenLine):
+		spokenLine = EditableLatex.speech.translate (spokenLine)
+		out = []
+		sups = 0 #How many superscripts we are in.
+		subs = 0 #How many subscripts we are in.
+		for expr in MATH_MATCHER.finditer(spokenLine):
+			if expr.group(1) == "sup":
+				sups+=1
+				#If there are any subscripts, do not pitch it, as we pitched the subscript.
+				#If there are any superscripts nessted, don't pitch it, because voice control isn't good enough for this in NVDA.
+				if sups == 1 and not subs:
+					out.append(speech.PitchCommand(1.25))
+				out.append("soop")
+				out.append(speech.BreakCommand(200))
+			elif expr.group(1) == "/sup":
+				sups -= 1
+				out.append("End soop")
+				if not sups and not subs:
+					#we know we are in nothing. turn the pitch change off.
+					out.append(speech.PitchCommand(1))
+				out.append(speech.BreakCommand(200))
+			elif expr.group(1) == "sub":
+				subs += 1
+				if subs == 1 and sups == 0:
+					out.append(speech.PitchCommand(.25))
+				out.append("sub")
+				out.append(speech.BreakCommand(200))
+			elif expr.group(1) == "/sub":
+				subs -= 1
+				out.append("End sub")
+				if not subs and not sups:
+					out.append(speech.PitchCommand(1))
+				out.append(speech.BreakCommand(200))
+			else:
+				#all other math. Send er.
+				out.append(expr.group(0))
+		speech.speak(out)
+
 
 	def getBrailleRegions(self, review=False):
 		"""Return modified braille regions for la tex.
