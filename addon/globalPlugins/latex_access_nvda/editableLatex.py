@@ -382,8 +382,8 @@ This method ensures that LaTeX translation occurs when the system caret moves, a
 		"kb:control+nvda+shift+M": "toggleMaths",
 		"kb(desktop):NVDA+UpArrow": "reportCurrentLine",
 		"kb(laptop):NVDA+l": "reportCurrentLine",
-		"kb:control+nvda+shift+D": "toggleDollars_nemeth",
-		"kb:alt+shift+nvda+D": "toggleDollars_speech",
+		"kb:alt+nvda+n": "toggleDollars_nemeth",
+		"kb:alt+nvda+d": "toggleDollars_speech",
 		"kb:alt+nvda+M":"inputMatrix",
 		"kb:NVDA+alt+b":"matrixBrowser",
 	}

@@ -5,8 +5,8 @@ As a college student who took  calculus and linear algebra, and with an interest
 ## 1: Keyboard shortcuts Quick reference:
 ### 1.0: Available in any Edit Field.
 * control+nvda+shift+m: toggle processing of la tex on or off. Read section 3.0 for more details.
-* control+nvda+shift+d: Toggle the presence of the $ sign around math in braille. Read 3.1 for more details.
-* alt+nvda+shift+d: Toggle the presence of the $ sign around math in speech. Read 3.2 for more details.
+* alt+nvda+n: Toggle the presence of the $ sign around math in braille. Read 3.1 for more details.
+* alt+nvda+d: Toggle the presence of the $ sign around math in speech. Read 3.2 for more details.
 * Alt+nvda+m: Add the currently selected matrix to the matrix browser. See 2.0: Matrices for a detailed tutorial.
 * Alt+nvda+b: Show the matrix browser. See 2.1 for detailed instructions on using the matrix browser, and 1.1 for gestures available here as a list.
 
@@ -15,8 +15,8 @@ As a college student who took  calculus and linear algebra, and with an interest
 * any arrow key: Move in that direction through the currently focused matrix.
 * Tab or Shift+tab: Move to the next or previous matrix loaded into the browser.
 * Delete: Deletes the current matrix.
-* NVDA+Tab: Report the currently focused matrix.
-* nvda+delete read the location in the matrix.
+* NVDA+Tab: Report the currently focused matrix. (This reads the whole thing).
+* nvda+delete read the location in the matrix (Shorter than read focus).
 
 ## 2: matrix Browser: An overview.
 
@@ -80,7 +80,8 @@ To read the location in the matrix, press nvda+delete (The report location comma
 You can press nvda+shift+control+m to trigger la tex reporting. While on, this translates math to english speech and nemeth braille. For example, $x+\left(2 \cdot x\right)^2$ is translated to x plus   (2   dot  x  ) squared and brailled in nemeth, ⠭⠷⠆⠭⠾⠘⠆
 
 ### 3.1: Dollar signs in nemeth:
-NVDA+shift+control+d toggles $ (dollar) signs in nemeth. If on, they show up, if off, they don't.
+alt+NVDA+n toggles $ (dollar) signs in nemeth. If on, they show up, if off, they don't.
 
 ### 3.2: Dollar signs for speech:
-NVDA+shift+alt+d toggles $ (dollar) signs in speech. If on, they are announced, if off, they don't.
+
+alt+NVDA+d toggles $ (dollar) signs in speech. If on, they are announced, if off, they don't.
